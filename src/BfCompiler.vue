@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { saveAs } from 'file-saver';
 
     interface InstructionNode{
         token:string, 
@@ -14,7 +15,6 @@ import { computed, ref, watch } from 'vue';
 
     const BF_TOKENS = "><+-.,[]";
     const PROGRAM_SIZE = 1000;
-    const STEP_INTERVAL = 500;
 
     const bfcode = ref<string>("");
     const bfoutput = ref<string>("");
@@ -24,7 +24,10 @@ import { computed, ref, watch } from 'vue';
     const memory_pointer = ref<number>(-1);
     const instruction_pointer = ref<number>(-1);
     const instructions_span_refs = ref<HTMLSpanElement[]>([]);
+    const autoplay_speed_precentage = ref<number>(50); 
     
+    let programAutoPlayInterval: number | undefined = undefined;
+
     const autoPlayButtonDisabled = computed(()=>{
         return instruction_pointer.value !== 0;
     });
@@ -32,6 +35,10 @@ import { computed, ref, watch } from 'vue';
     const stepOverButtonDisabled = computed(()=>{
         return instruction_pointer.value === -1;
     });
+
+    const autoplayTimeInterval = computed(()=>{
+        return 2000 * autoplay_speed_precentage.value/100;
+    })
 
 
     function filterBfCode(code:string):InstructionNode[]{
@@ -81,6 +88,9 @@ import { computed, ref, watch } from 'vue';
         instruction_nodes.value = filterBfCode(bfcode.value);
         jump_map.value = getJumpMap(instruction_nodes.value);
         memory_nodes.value = resetProgramMemory();
+        
+        if (programAutoPlayInterval)
+            clearInterval(programAutoPlayInterval);
     }
     
     function lexer():InstructionNode{
@@ -132,7 +142,7 @@ import { computed, ref, watch } from 'vue';
     }
 
     function autoPlay(){
-        const programAutoPlayInterval = setInterval(()=>{
+        programAutoPlayInterval = setInterval(()=>{
             const isDone = stepOver();
             if (isDone){
                 clearInterval(programAutoPlayInterval);
@@ -145,7 +155,7 @@ import { computed, ref, watch } from 'vue';
                     spanElement.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
                 }
             })
-        }, STEP_INTERVAL)
+        }, autoplayTimeInterval.value)
     }
 
     
@@ -164,6 +174,11 @@ import { computed, ref, watch } from 'vue';
         }
     }
 
+    function downloadPortableFile(){
+        const blob = new Blob(['Hello, world!'], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'hello.txt');
+    }
+
     watch(instruction_pointer, (newInstructionPointer)=>{
         if (instruction_nodes.value.length === 0) return;
         for (let i = 0; i < instruction_nodes.value.length; i++){
@@ -179,6 +194,7 @@ import { computed, ref, watch } from 'vue';
         }
     }); 
 
+    
 </script>
 
 <template>
@@ -198,9 +214,13 @@ import { computed, ref, watch } from 'vue';
      <label id="bfOutputLabel">{{ bfoutput }}</label>
      <textarea v-model="bfcode" ></textarea>
      <div class="button-row">
+        <input type="range" min="1" max="100" v-model="autoplay_speed_precentage"/>  
+     </div>
+     <div class="button-row">
         <button @click="loadProgram">Load Program</button>
         <button @click="stepOver" :disabled="stepOverButtonDisabled">Step Over</button>
         <button @click="autoPlay" :disabled="autoPlayButtonDisabled">Autoplay</button>
+        <button @click="downloadPortableFile" :disabled="stepOverButtonDisabled">Download</button>
      </div>
   </div>
 </template>
