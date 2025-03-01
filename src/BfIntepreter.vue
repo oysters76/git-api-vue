@@ -1,0 +1,97 @@
+<script setup lang="ts">
+import { useBfInterpreter } from './composables/useBfInterpreter';
+
+
+    const {
+        bfcode, 
+        bfoutput, 
+        memory_nodes, 
+        instruction_nodes, 
+        instructions_span_refs, 
+        autoPlayButtonDisabled, 
+        stepOverButtonDisabled, 
+        autoplay_speed_precentage,
+
+        loadBfProgram,
+        stepThroughBf,
+        autoPlayBf,
+        isActiveInstruction,
+        isActiveMemory,
+        downloadPortableFile
+    } = useBfInterpreter();
+
+    
+</script>
+
+<template>
+  <div class="row">
+     <div v-if="memory_nodes.length > 0" class="holder memory-holder">
+        <span v-for="(memoryNode, memoryIndex) in memory_nodes" :key="memoryIndex"
+                :class="isActiveMemory(memoryIndex)">
+            {{ memoryNode.memory }}
+        </span>
+     </div>
+     <div v-if="instruction_nodes.length > 0" class="holder instruction-holder">
+        <span v-for="(bfToken, bfTokenIndex) in instruction_nodes" :id="bfToken.id" :key="bfTokenIndex" 
+                        :class="isActiveInstruction(bfTokenIndex)" ref="instructions_span_refs" >
+            {{ bfToken.token }}
+        </span>
+     </div>
+     <label id="bfOutputLabel">{{ bfoutput }}</label>
+     <textarea v-model="bfcode" ></textarea>
+     <div class="button-row">
+        <input type="range" min="1" max="100" v-model="autoplay_speed_precentage"/>  
+     </div>
+     <div class="button-row">
+        <button @click="loadBfProgram">Load Program</button>
+        <button @click="stepThroughBf" :disabled="stepOverButtonDisabled">Step Over</button>
+        <button @click="autoPlayBf" :disabled="autoPlayButtonDisabled">Autoplay</button>
+        <button @click="downloadPortableFile" :disabled="stepOverButtonDisabled">Download</button>
+     </div>
+  </div>
+</template>
+
+<style scoped>
+ .row{
+    display:flex; 
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+ }
+ .row > button{
+    max-width: 150px;
+ }
+ .row > textarea{
+    width:400px;
+    height: 200px;
+ }
+ .holder{
+    display: flex;
+    gap: 2px;
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+ }
+.holder > span{
+    min-width: 15px;
+    min-height: 45px;    
+    columns: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+ .button-row{
+    display:flex;
+    gap: 15px;
+ }
+ .inactive{
+    background-color: grey;
+ }
+ .active{
+    background-color: yellow;
+ }
+ #bfOutputLabel{
+    color: white;
+ }
+</style>

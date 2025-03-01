@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import BfCompiler from '../BfCompiler.vue';
+import BfCompiler from '../BfIntepreter.vue';
 import GitUserSearch from '../GitUserSearch.vue';
 
 // Define routes
