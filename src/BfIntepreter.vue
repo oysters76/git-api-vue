@@ -1,6 +1,8 @@
 <script setup lang="ts">
+   import { useI18n } from 'vue-i18n';
 import { useBfInterpreter } from './composables/useBfInterpreter';
 
+   const {t} = useI18n();
 
     const {
         bfcode, 
@@ -43,10 +45,10 @@ import { useBfInterpreter } from './composables/useBfInterpreter';
         <input type="range" min="1" max="100" v-model="autoplay_speed_precentage"/>  
      </div>
      <div class="button-row">
-        <button @click="loadBfProgram">Load Program</button>
-        <button @click="stepThroughBf" :disabled="stepOverButtonDisabled">Step Over</button>
-        <button @click="autoPlayBf" :disabled="autoPlayButtonDisabled">Autoplay</button>
-        <button @click="downloadPortableFile" :disabled="stepOverButtonDisabled">Download</button>
+        <button @click="loadBfProgram">{{ t('bfLoadProgram') }}</button>
+        <button @click="stepThroughBf" :disabled="stepOverButtonDisabled">{{ t('bfStepOver') }}</button>
+        <button @click="autoPlayBf" :disabled="autoPlayButtonDisabled">{{ t('bfAutoPlay') }}</button>
+        <button @click="downloadPortableFile" :disabled="stepOverButtonDisabled">{{ t('bfDownload') }}</button>
      </div>
   </div>
 </template>

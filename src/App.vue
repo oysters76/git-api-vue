@@ -1,12 +1,24 @@
 <script setup lang="ts">
+  import { useI18n } from 'vue-i18n'
+  const { t, locale } = useI18n() 
+
+  function changeLanguage(lang:string){
+    locale.value = lang;
+    localStorage.setItem("lang", lang);
+  }
 
 </script>
 
 <template>
+   <div style="display:flex;justify-content:flex-end;gap:15px;width:100%;">
+    <button @click="changeLanguage('en')">English</button>
+    <button @click="changeLanguage('fr')">Français</button>
+    <button @click="changeLanguage('ja')">日本語</button>
+   </div>
    <div id="app">
     <nav>
-      <router-link to="/">Search</router-link> |
-      <router-link to="/bf">BF Compiler</router-link> 
+      <router-link to="/">{{ t("searchGitUserLinkText") }}</router-link> |
+      <router-link to="/bf">{{ t("bfLinkText") }}</router-link> 
      </nav>
     <router-view></router-view> <!-- This is where the routed components will appear -->
   </div>
