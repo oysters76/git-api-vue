@@ -28,11 +28,11 @@
         <span>{{ t('gitSearchTitle') }}</span>
       </h1>
       <div class="row">
-        <input v-model="username" :placeholder="t('gitUserSearchTitle')" />
-        <button @click="searchUser" :disabled="loading">{{ t('gitUserSearchBtnText') }}</button>
+        <input id="txtSearchGit" v-model="username" :placeholder="t('gitUserSearchTitle')" />
+        <button id="btnSearchGitUser" @click="searchUser" :disabled="loading">{{ t('gitUserSearchBtnText') }}</button>
       </div>
   
-      <div v-if="loading">{{ t('gitloadingText') }}</div>
+      <div id='loadingIndicator' v-if="loading">{{ t('gitloadingText') }}</div>
       <div v-if="error" class="error">{{ error }}</div>
       <div v-if="gitUser.login">
         <GitUserBadge :gitUser="gitUser"/>

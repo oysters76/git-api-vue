@@ -51,7 +51,7 @@ export const gitUserStore = defineStore("gitUsers", ()=>{
     
         try {
           const response = await fetch(GIT_USERS_URL_TEMPLATE(username))
-          if (!response.ok) throw new Error('User not found')
+          if (!response.ok) throw new Error(`User doesn't exist!`)
             gitUser.value = await response.json();
         
         } catch (err) {
