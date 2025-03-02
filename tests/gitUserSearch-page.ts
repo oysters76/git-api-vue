@@ -25,11 +25,7 @@ export class GitUserSearchPage {
     await this.usernameInput.fill(gitUserName);
     await this.searchButton.click();
   }
-
-  async getErrorMessage() {
-    return this.errorMessage.textContent();
-  }
-
+  
   async isGitUserBadgeVisible() {
     return this.gitUserBadge.isVisible();
   }

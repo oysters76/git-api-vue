@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue';
-    import { gitUserStore } from '../store/gitUser'; // Adjust the path as needed
+    import { gitUserStore } from '../store/gitUser'; 
     import GitUserBadge from './GitUserBadge.vue';
     import { useI18n } from 'vue-i18n';
 
@@ -14,9 +14,6 @@
             await store.fetchUser(username.value);
         }
     };
-
-    // Destructure the store's state for easier access
-    // Use computed to make the store state reactive in the template
     const gitUser = computed(() => store.gitUser);
     const loading = computed(() => store.loading);
     const error = computed(() => store.error);

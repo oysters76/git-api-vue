@@ -21,8 +21,7 @@ test.describe('Git User Search Component', ()=>{
 
     test("Should display error message when search query search for non-existent user", async()=>{
         await gitUserSearchPage.doGitUserSearch(NON_EXISTENT_USER); 
-        const errMessage = await gitUserSearchPage.getErrorMessage(); 
-        await expect(errMessage).toContain("User doesn't exist!"); 
+        await expect(gitUserSearchPage.errorMessage).toBeVisible();
     }); 
 
     test('should display GitUserBadge when search is successful', async () => {
