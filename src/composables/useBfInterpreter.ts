@@ -1,6 +1,6 @@
 import { computed, ref, watch } from "vue";
 import type { InstructionNode, MemoryNode } from "../types/bfInterpreterTypes";
-import { filterBfCode, getJumpMap, resetProgramMemory, stepBf, isInvalidJumps } 
+import { filterBfCode, getJumpMap, resetProgramMemory, stepBf, isInvalidJumps, dumpToJS } 
             from "../logic/bfInterpreterLogic";
 import { saveAs } from 'file-saver';
 import { useI18n } from "vue-i18n";
@@ -117,9 +117,10 @@ export function useBfInterpreter(){
         }
     }
 
-    function downloadPortableFile(){
-        const blob = new Blob(['Hello, world!'], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'hello.txt');
+    async function downloadPortableFile(){
+        const data = await dumpToJS(bfcode.value); 
+        const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'bf_code.js');
     }
 
     watch(instruction_pointer, (newInstructionPointer)=>{

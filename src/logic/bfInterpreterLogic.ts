@@ -1,5 +1,7 @@
 import { BF_TOKENS, PROGRAM_SIZE, type BFStepResult, type InstructionNode, 
     type MemoryNode } from "../types/bfInterpreterTypes";
+    
+import {obfuscate} from "javascript-obfuscator";
 
 export function filterBfCode(code:string):InstructionNode[]{
     return code.split("")
@@ -58,6 +60,73 @@ export function  resetProgramMemory(limit:number=PROGRAM_SIZE):MemoryNode[]{
 function getNextToken(tokens:string[], instr_ptr:number):string|null{
     if (instr_ptr < 0 || instr_ptr >= tokens.length) return null;
     return tokens[instr_ptr];
+}
+
+export function dumpToJS(bfCode:string):Promise<string>{
+
+    function arrayToString(arr:any[]):string{
+        let buffer = "[";
+        buffer += arr.join(",");
+        buffer += "]";
+        return buffer;
+    }
+
+    function bfToJS(bfCode:string, evalLimit=100000000):string{
+        const instrNodes = filterBfCode(bfCode); 
+        const jsTokens = instrNodes
+                            .map(({token})=>{
+                                return `\"${token}\"`;
+                            });
+        const tokens = instrNodes
+                            .map(({token})=>{
+                                return token;
+        });
+        const jmpMap = getJumpMap(instrNodes);
+        let buffer = "(function(){";
+        buffer += "const tokens=" + arrayToString(jsTokens) + ";";
+        buffer += "const jmpMap=" + arrayToString(jmpMap) + ";"; 
+        
+        let result:BFStepResult = {
+            mem_ptr:0, 
+            instr_ptr:0, 
+            isDone:false, 
+            memory:resetProgramMemory().map(({memory})=>memory), 
+            bfOutput:"",
+        };
+        let stepCounter = 0;                                 
+        while (!result.isDone && (stepCounter < evalLimit)){
+            const newResult = stepBf(jmpMap, result.memory!, tokens, result.mem_ptr!, 
+            result.instr_ptr!, instrNodes.length, result.bfOutput!); 
+            if (newResult.isDone)
+                break;
+            result = newResult;
+            stepCounter += 1;  
+        }
+        
+        if (stepCounter >= evalLimit)
+            result.bfOutput = "err: eval limit reached!";
+
+        buffer += `console.log(\`${result.bfOutput}\`)`; 
+        buffer += "})();"; 
+
+        console.log(buffer);
+        return buffer;
+    }
+
+    return new Promise((resolve)=>{
+        resolve(
+            obfuscate(bfToJS(bfCode), {
+                compact: true,
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                numbersToExpressions: true,
+                simplify: true,
+                stringArrayShuffle: true,
+                splitStrings: true,
+                stringArrayThreshold: 1
+            }).getObfuscatedCode()
+        );
+    })
 }
 
 export function stepBf(jump_map:number[], memory:number[], tokens:string[], mem_ptr:number, 

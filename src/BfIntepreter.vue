@@ -21,7 +21,7 @@ import { useBfInterpreter } from './composables/useBfInterpreter';
         autoPlayBf,
         isActiveInstruction,
         isActiveMemory,
-        downloadPortableFile
+        downloadPortableFile,
     } = useBfInterpreter();
 
     
