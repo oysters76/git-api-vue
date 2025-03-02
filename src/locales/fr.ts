@@ -12,4 +12,6 @@ export default {
     bfStepOver: "Pas à pas",
     bfAutoPlay: "Lecture automatique",
     bfDownload: "Télécharger",
+    bfErrorInvalidProgram: "Vous avez entré un programme BF invalide!",
+    bfErrorInvalidJumps: "Nombre de sauts invalide dans votre programme BF!",
 };

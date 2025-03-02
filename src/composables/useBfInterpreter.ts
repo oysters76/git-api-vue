@@ -1,11 +1,12 @@
 import { computed, ref, watch } from "vue";
 import type { InstructionNode, MemoryNode } from "../types/bfInterpreterTypes";
-import { filterBfCode, getJumpMap, resetProgramMemory, stepBf } 
+import { filterBfCode, getJumpMap, resetProgramMemory, stepBf, isInvalidJumps } 
             from "../logic/bfInterpreterLogic";
 import { saveAs } from 'file-saver';
+import { useI18n } from "vue-i18n";
 
 export function useBfInterpreter(){
-
+    const {t} = useI18n();
     const bfcode = ref<string>("");
     const bfoutput = ref<string>("");
     const memory_nodes = ref<MemoryNode[]>([]); 
@@ -15,8 +16,13 @@ export function useBfInterpreter(){
     const instruction_pointer = ref<number>(-1);
     const instructions_span_refs = ref<HTMLSpanElement[]>([]);
     const autoplay_speed_precentage = ref<number>(50); 
+    const errorMessage = ref<string>("");
 
     let programAutoPlayInterval: number | undefined = undefined;
+
+    const isError = computed(()=>{
+        return errorMessage.value !== "";
+    });
 
     const autoPlayButtonDisabled = computed(()=>{
         return instruction_pointer.value !== 0;
@@ -30,7 +36,16 @@ export function useBfInterpreter(){
         return 2000 * autoplay_speed_precentage.value/100;
     })
 
+    function resetErrorMessage(){
+        errorMessage.value = "";
+    }
+
+    function setErrorMessage(err:string){
+        errorMessage.value = err;
+    }
+
     function loadBfProgram(){
+        resetErrorMessage();
         bfoutput.value = "";
         memory_pointer.value = 0;
         instruction_pointer.value = 0;
@@ -40,6 +55,11 @@ export function useBfInterpreter(){
         
         if (programAutoPlayInterval)
             clearInterval(programAutoPlayInterval);
+        if (instruction_nodes.value.length == 0){
+            setErrorMessage(t('bfErrorInvalidProgram'));
+        }else if (isInvalidJumps(instruction_nodes.value)){
+            setErrorMessage(t('bfErrorInvalidJumps')); 
+        }
     }
 
     function stepThroughBf():boolean{
@@ -126,6 +146,8 @@ export function useBfInterpreter(){
         autoPlayButtonDisabled, 
         stepOverButtonDisabled, 
         autoplay_speed_precentage,
+        errorMessage,
+        isError,
 
         loadBfProgram,
         stepThroughBf,

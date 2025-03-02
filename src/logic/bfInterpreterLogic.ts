@@ -13,6 +13,20 @@ export function filterBfCode(code:string):InstructionNode[]{
     });
 } 
 
+export function isInvalidJumps(nodes:InstructionNode[]):boolean{
+    let count = 0;
+    for (let i = 0; i < nodes.length; i++){
+        const {token} = nodes[i]; 
+        if (token === "["){
+            count += 1;
+        }
+        else if (token === "]"){
+            count -= 1;
+        }
+    }
+    return count != 0;
+}
+
 export function getJumpMap(instructions:InstructionNode[]):number[]{
     let jumpMap:number[] = [];
     

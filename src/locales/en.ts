@@ -11,6 +11,8 @@ export default {
     bfLoadProgram: "Load Program",
     bfStepOver: "Step Over", 
     bfAutoPlay: "Autoplay", 
-    bfDownload: "Download"
+    bfDownload: "Download",
+    bfErrorInvalidProgram: "You have entered an invalid BF Program!",
+    bfErrorInvalidJumps: "Invalid amount of jumps in your BF program!",
 
 }

@@ -18,7 +18,7 @@ export class GitUserSearchPage {
   }
 
   async navigate() {
-    await this.page.goto('/'); // Adjust the path as needed
+    await this.page.goto('/');
   }
 
   async doGitUserSearch(gitUserName: string){

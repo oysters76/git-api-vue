@@ -13,6 +13,8 @@ import { useBfInterpreter } from './composables/useBfInterpreter';
         autoPlayButtonDisabled, 
         stepOverButtonDisabled, 
         autoplay_speed_precentage,
+        errorMessage, 
+        isError,
 
         loadBfProgram,
         stepThroughBf,
@@ -27,28 +29,29 @@ import { useBfInterpreter } from './composables/useBfInterpreter';
 
 <template>
   <div class="row">
-     <div v-if="memory_nodes.length > 0" class="holder memory-holder">
+     <div v-if="memory_nodes.length > 0 && !isError" class="holder memory-holder">
         <span v-for="(memoryNode, memoryIndex) in memory_nodes" :key="memoryIndex"
                 :class="isActiveMemory(memoryIndex)">
             {{ memoryNode.memory }}
         </span>
      </div>
-     <div v-if="instruction_nodes.length > 0" class="holder instruction-holder">
+     <div v-if="instruction_nodes.length > 0 && !isError" class="holder instruction-holder">
         <span v-for="(bfToken, bfTokenIndex) in instruction_nodes" :id="bfToken.id" :key="bfTokenIndex" 
                         :class="isActiveInstruction(bfTokenIndex)" ref="instructions_span_refs" >
             {{ bfToken.token }}
         </span>
      </div>
      <label id="bfOutputLabel">{{ bfoutput }}</label>
-     <textarea v-model="bfcode" ></textarea>
+     <textarea v-model="bfcode" id="txtBfCode"></textarea>
+     <label id="lblError" v-if="isError" style="color:red;">{{ errorMessage }}</label>
      <div class="button-row">
-        <input type="range" min="1" max="100" v-model="autoplay_speed_precentage"/>  
+        <input id="rangeSpeedSelect" type="range" min="1" max="100" v-model="autoplay_speed_precentage"/>  
      </div>
      <div class="button-row">
-        <button @click="loadBfProgram">{{ t('bfLoadProgram') }}</button>
-        <button @click="stepThroughBf" :disabled="stepOverButtonDisabled">{{ t('bfStepOver') }}</button>
-        <button @click="autoPlayBf" :disabled="autoPlayButtonDisabled">{{ t('bfAutoPlay') }}</button>
-        <button @click="downloadPortableFile" :disabled="stepOverButtonDisabled">{{ t('bfDownload') }}</button>
+        <button id="btnLoad" @click="loadBfProgram">{{ t('bfLoadProgram') }}</button>
+        <button id="btnStep" @click="stepThroughBf" :disabled="stepOverButtonDisabled">{{ t('bfStepOver') }}</button>
+        <button id="btnAutoPlay" @click="autoPlayBf" :disabled="autoPlayButtonDisabled">{{ t('bfAutoPlay') }}</button>
+        <button id="btnDownload" @click="downloadPortableFile" :disabled="stepOverButtonDisabled">{{ t('bfDownload') }}</button>
      </div>
   </div>
 </template>

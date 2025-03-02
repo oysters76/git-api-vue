@@ -12,4 +12,6 @@ export default {
     bfStepOver: "ステップオーバー",
     bfAutoPlay: "自動再生",
     bfDownload: "ダウンロード",
+    bfErrorInvalidProgram: "無効なBFプログラムが入力されました!",
+    bfErrorInvalidJumps: "BFプログラム内のジャンプ数が無効です!",
 };
