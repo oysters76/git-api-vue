@@ -16,7 +16,12 @@ export function useBfInterpreter(){
     const instruction_pointer = ref<number>(-1);
     const instructions_span_refs = ref<HTMLSpanElement[]>([]);
     const autoplay_speed_precentage = ref<number>(50); 
-    const errorMessage = ref<string>("");
+    const errorKey = ref<string>(""); 
+
+    const errorMessage = computed(()=>{
+        if (errorKey.value == "") return ""; 
+        return t(errorKey.value);
+    })
 
     let programAutoPlayInterval: number | undefined = undefined;
 
@@ -37,11 +42,11 @@ export function useBfInterpreter(){
     })
 
     function resetErrorMessage(){
-        errorMessage.value = "";
+        errorKey.value = "";
     }
 
-    function setErrorMessage(err:string){
-        errorMessage.value = err;
+    function setErrorMessage(errKey:string){
+        errorKey.value = errKey;
     }
 
     function loadBfProgram(){
@@ -56,9 +61,9 @@ export function useBfInterpreter(){
         if (programAutoPlayInterval)
             clearInterval(programAutoPlayInterval);
         if (instruction_nodes.value.length == 0){
-            setErrorMessage(t('bfErrorInvalidProgram'));
+            setErrorMessage('bfErrorInvalidProgram');
         }else if (isInvalidJumps(instruction_nodes.value)){
-            setErrorMessage(t('bfErrorInvalidJumps')); 
+            setErrorMessage('bfErrorInvalidJumps'); 
         }
     }
 
