@@ -1,5 +1,7 @@
-# Vue 3 + TypeScript + Vite
+# Vue3 Probe
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A project to test the composition API of Vue 3. 
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+1. This project uses a component that tests the fetch API to get data from the public github API. 
+2. This project implements a composable to visualize a turing machine, and runs the bf programming language. 
+3. This webpage can inteprete any bf program, and simulates an universal turing machine.
